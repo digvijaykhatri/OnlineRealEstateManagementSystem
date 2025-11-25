@@ -1,0 +1,2 @@
+<%-- This is the user dashboard page, shown after login. - Displays welcome message and user info. - Shows different
+    options based on role: - Buyer: view properties - Seller: manage properties - Admin: manage users, data --%>

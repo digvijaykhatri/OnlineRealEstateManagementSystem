@@ -1,0 +1,1 @@
+<%-- Simple page to show on successful action. - Will display custom success message using request attribute. --%>

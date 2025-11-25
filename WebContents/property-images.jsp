@@ -1,0 +1,2 @@
+<%-- Page to upload and view property images. - Only add or delete image (no edit). - Supports slideshow with next and
+    previous buttons. - Uses file input and file storage logic (Server-side). --%>
