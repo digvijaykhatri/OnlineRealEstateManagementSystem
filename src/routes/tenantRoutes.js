@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { tenantController } = require('../controllers');
-const { authenticate, authorize } = require('../middleware');
+const { authenticate, authorize, generalLimiter, adminLimiter } = require('../middleware');
 
-// All routes require authentication
+// All routes require authentication and rate limiting
+router.use(generalLimiter);
 router.use(authenticate);
 
 // Tenant self-service routes
@@ -12,10 +13,10 @@ router.get('/me', authorize('tenant'), tenantController.getMyProfile);
 router.put('/me', authorize('tenant'), tenantController.updateMyProfile);
 
 // Admin/Landlord routes
-router.get('/', authorize('admin', 'landlord'), tenantController.getAllTenants);
-router.get('/search', authorize('admin', 'landlord'), tenantController.searchTenants);
-router.get('/statistics', authorize('admin'), tenantController.getTenantStatistics);
-router.delete('/:id', authorize('admin'), tenantController.deleteTenant);
+router.get('/', adminLimiter, authorize('admin', 'landlord'), tenantController.getAllTenants);
+router.get('/search', adminLimiter, authorize('admin', 'landlord'), tenantController.searchTenants);
+router.get('/statistics', adminLimiter, authorize('admin'), tenantController.getTenantStatistics);
+router.delete('/:id', adminLimiter, authorize('admin'), tenantController.deleteTenant);
 
 // General routes
 router.get('/:id', tenantController.getTenantById);

@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { rentalAgreementController } = require('../controllers');
-const { authenticate, authorize } = require('../middleware');
+const { authenticate, authorize, generalLimiter, adminLimiter } = require('../middleware');
 
-// All routes require authentication
+// All routes require authentication and rate limiting
+router.use(generalLimiter);
 router.use(authenticate);
 
 // Admin routes
-router.get('/', authorize('admin'), rentalAgreementController.getAllAgreements);
-router.get('/active', authorize('admin', 'landlord'), rentalAgreementController.getActiveAgreements);
-router.get('/statistics', authorize('admin'), rentalAgreementController.getAgreementStatistics);
-router.delete('/:id', authorize('admin'), rentalAgreementController.deleteAgreement);
+router.get('/', adminLimiter, authorize('admin'), rentalAgreementController.getAllAgreements);
+router.get('/active', adminLimiter, authorize('admin', 'landlord'), rentalAgreementController.getActiveAgreements);
+router.get('/statistics', adminLimiter, authorize('admin'), rentalAgreementController.getAgreementStatistics);
+router.delete('/:id', adminLimiter, authorize('admin'), rentalAgreementController.deleteAgreement);
 
 // Landlord routes
 router.post('/', authorize('landlord', 'admin'), rentalAgreementController.createAgreement);

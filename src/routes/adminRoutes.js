@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { adminController } = require('../controllers');
-const { authenticate, authorize } = require('../middleware');
+const { authenticate, authorize, adminLimiter } = require('../middleware');
 
-// All admin routes require admin role
+// All admin routes require admin role and rate limiting
+router.use(adminLimiter);
 router.use(authenticate);
 router.use(authorize('admin'));
 

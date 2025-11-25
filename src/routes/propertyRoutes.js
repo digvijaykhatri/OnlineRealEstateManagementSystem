@@ -1,25 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const { propertyController } = require('../controllers');
-const { authenticate, authorize, optionalAuth } = require('../middleware');
+const { authenticate, authorize, optionalAuth, generalLimiter } = require('../middleware');
 
-// Public routes (with optional auth)
-router.get('/', optionalAuth, propertyController.getAllProperties);
-router.get('/available', propertyController.getAvailableProperties);
-router.get('/search', propertyController.searchProperties);
-router.get('/:id', propertyController.getPropertyById);
+// Public routes (with optional auth and rate limiting)
+router.get('/', generalLimiter, optionalAuth, propertyController.getAllProperties);
+router.get('/available', generalLimiter, propertyController.getAvailableProperties);
+router.get('/search', generalLimiter, propertyController.searchProperties);
+router.get('/:id', generalLimiter, propertyController.getPropertyById);
 
-// Protected routes
-router.post('/', authenticate, authorize('landlord', 'admin', 'agent'), propertyController.createProperty);
-router.put('/:id', authenticate, propertyController.updateProperty);
-router.patch('/:id/status', authenticate, propertyController.updatePropertyStatus);
-router.post('/:id/amenities', authenticate, propertyController.addAmenity);
-router.post('/:id/images', authenticate, propertyController.addImage);
-router.delete('/:id', authenticate, propertyController.deleteProperty);
+// Protected routes with rate limiting
+router.post('/', generalLimiter, authenticate, authorize('landlord', 'admin', 'agent'), propertyController.createProperty);
+router.put('/:id', generalLimiter, authenticate, propertyController.updateProperty);
+router.patch('/:id/status', generalLimiter, authenticate, propertyController.updatePropertyStatus);
+router.post('/:id/amenities', generalLimiter, authenticate, propertyController.addAmenity);
+router.post('/:id/images', generalLimiter, authenticate, propertyController.addImage);
+router.delete('/:id', generalLimiter, authenticate, propertyController.deleteProperty);
 
-// Owner-specific routes
-router.get('/owner/:ownerId', authenticate, propertyController.getPropertiesByOwner);
-router.get('/my/properties', authenticate, propertyController.getPropertiesByOwner);
-router.get('/my/statistics', authenticate, propertyController.getPropertyStatistics);
+// Owner-specific routes with rate limiting
+router.get('/owner/:ownerId', generalLimiter, authenticate, propertyController.getPropertiesByOwner);
+router.get('/my/properties', generalLimiter, authenticate, propertyController.getPropertiesByOwner);
+router.get('/my/statistics', generalLimiter, authenticate, propertyController.getPropertyStatistics);
 
 module.exports = router;

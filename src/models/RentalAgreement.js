@@ -119,6 +119,8 @@ class RentalAgreement {
       signedByTenant: this.signedByTenant,
       signedByLandlord: this.signedByLandlord,
       signedAt: this.signedAt,
+      terminationReason: this.terminationReason,
+      terminatedAt: this.terminatedAt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     };

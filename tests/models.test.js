@@ -221,6 +221,12 @@ describe('RentalAgreement Model', () => {
     
     expect(agreement.status).toBe('terminated');
     expect(agreement.terminationReason).toBe('Lease violation');
+    expect(agreement.terminatedAt).toBeDefined();
+    
+    // Verify toJSON includes termination fields
+    const json = agreement.toJSON();
+    expect(json.terminationReason).toBe('Lease violation');
+    expect(json.terminatedAt).toBeDefined();
   });
 });
 
