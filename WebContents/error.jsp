@@ -1,0 +1,1 @@
+<%-- Simple page to show when something goes wrong. - Will display error messages passed by Servlet. --%>
